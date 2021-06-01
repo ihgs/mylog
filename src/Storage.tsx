@@ -1,56 +1,29 @@
+import Work from './Work';
+const worksKey = 'mylogDataWorks';
 
-const logKey = 'mylogData';
+export default class Storage {
 
-export class Work {
-  private _startStamp: number = 0;
-  private _endStamp: number = 0;
-
-  constructor(){
-
-  }
-  get startStamp(): number{
-    return this._startStamp;
-  }
-
-  set startStamp(value: number) {
-    this._startStamp = value;
-  }
-
-  get endStamp(): number{
-    return this._endStamp;
+  static getWorks(): Work[] {
+    const works: Work[] = [];
+    if(worksKey in localStorage) {
+      JSON.parse(localStorage.getItem(worksKey) as string).forEach((obj: { _start: number; _end: number; _comment: string; })=>{
+        const work = new Work();
+        work.start = obj._start;
+        work.end = obj._end;
+        work.comment = obj._comment;
+        works.push(work);
+      });
+    }
+    return works;
   }
 
-  set endStamp(value: number) {
-    this._endStamp = value;
+  static saveWorks(works:Work[]){
+    localStorage.setItem(worksKey, JSON.stringify(works));
   }
 
+  static clear(){
+    localStorage.removeItem(worksKey);
+  }
 }
 
-
-export class Works {
-  private static instance: Works;
-
-  static getInstance(): Works{
-    if(!this.instance) {
-      this.instance = new Works();
-    }
-    return this.instance;
-  }
-  private _works: Work[] = [];
-
-  constructor(){
-    if(logKey in localStorage) {
-      this._works = JSON.parse(localStorage.getItem(logKey) as string) as Work[];
-    }
-  }
-
-  get works(): Work[]{
-    return this._works;
-  }
-
-  add(work:Work){
-    this._works.push(work);
-    localStorage.setItem(logKey, JSON.stringify(this._works));
-  }
-}
 

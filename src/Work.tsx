@@ -7,7 +7,7 @@ export default class Work {
     const obj = new Work();
     obj.start = this._start;
     obj.end = this._end;
-    obj._comment = this._comment;
+    obj.comment = this._comment;
     return obj;
   }
 
