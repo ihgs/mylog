@@ -1,6 +1,6 @@
 import Work from './Work';
 const worksKey = 'mylogDataWorks';
-
+const currentKey = 'mylogDataCurrent';
 export default class Storage {
 
   static getWorks(): Work[] {
@@ -21,8 +21,27 @@ export default class Storage {
     localStorage.setItem(worksKey, JSON.stringify(works));
   }
 
+  static getCurrent(): Work {
+    const current = new Work();
+    if(currentKey in localStorage) {
+      const obj = JSON.parse(localStorage.getItem(currentKey) as string);
+      current.start = obj._start;
+      current.comment = obj._comment;
+    }
+    return current;
+  }
+
+  static saveCurrent(current:Work){
+    localStorage.setItem(currentKey,  JSON.stringify(current));
+  }
+
+  static clearCurrent() {
+    localStorage.removeItem(currentKey);
+  }
+  
   static clear(){
     localStorage.removeItem(worksKey);
+    localStorage.removeItem(currentKey);
   }
 }
 

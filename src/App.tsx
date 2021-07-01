@@ -15,6 +15,8 @@ function App() {
   useEffect(()=>{
     const ws = Storage.getWorks();
     setWorks(ws);
+    const cu = Storage.getCurrent();
+    setWork(cu);
   },[])
 
   const start = ()=> {
@@ -37,6 +39,7 @@ function App() {
     setWorks(newWorks);
     Storage.saveWorks(newWorks);
     setWork(new Work());
+    Storage.clearCurrent();
     setStatus('not_start');
   }
 
@@ -52,6 +55,7 @@ function App() {
     const newWorks = [...works, current];
     setWorks(newWorks);
     Storage.saveWorks(newWorks);
+    Storage.clearCurrent();
     const newWork = new Work();
     newWork.start = new Date().getTime();
     setWork(newWork);
@@ -65,6 +69,7 @@ function App() {
     }
     Storage.clear();
     setWorks([]);
+    setWork(new Work());
   }
 
   const removeRow = (index:number) => {
@@ -79,7 +84,8 @@ function App() {
   const changeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
     const current = work.clone();
     current.comment = e.target.value;
-    setWork(current);    
+    setWork(current);
+    Storage.saveCurrent(current);
   }
 
   const formatTime = (timestamp:number) =>{
@@ -112,7 +118,7 @@ function App() {
       list.push(
         <tr key={index}>
           <td>{w.comment}</td>
-          <td>{ Math.round((w.end - w.start)/(60.0*60*1000)*10)/10}</td>
+          <td>{ Math.round((w.end - w.start)/(60.0*60*1000)*100)/100}</td>
           <td>{formatTime(w.start)} - {formatTime(w.end)}</td> 
           <td><Button onClick={()=>{removeRow(index)}}>Remove</Button></td>
         </tr>
